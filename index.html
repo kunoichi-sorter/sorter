@@ -1,12 +1,269 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>My Static Website</title>
-  </head>
-  <body>
-    <h1>My Static Website</h1>
-    <p>
-      Hello, I'm online, and everyone can see me!
-    </p>
-  </body>
+<head>
+<style>
+body {
+	background-color: #333333;
+  	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: white;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+td {
+  text-align: center;
+}
+td.button {
+	cursor:pointer;
+}
+
+.rb {
+
+	border-radius: 10px;
+    background-color: #fc7295;
+    color:white;
+    
+  	font-family: "Kiwi Maru", serif;
+    padding:3px;
+    font-size:20px;
+  	cursor: pointer;
+}
+.bb {
+	margin:15px;
+    padding:15px;
+  	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  	cursor: pointer;
+}
+div#head{
+	margin-bottom:15px;
+	margin-top:45px;
+}
+div#rez{
+	width:fit-content;
+    block-size: fit-content;
+    padding: 5em;
+	padding-top: 2em;
+}
+div.item{
+	display:inline-block;
+    margin:5px;
+}
+span.rank{
+	font-size:20px;
+
+}
+div#head2{
+	font-size:30px;
+	padding-top: 1em;
+}
+
+</style>
+</head>
+<body>
+<center>
+<div id="head">Kunoichi sorter. Select you are favorite <br /> Kunoichi and receive a sorted list.<br /><br /><span id="done">You are 0% done.</span></div>
+<div id="head2" style="display:none">Congratulations. You are done with the sorting.</div>
+
+<table class="center" id="mainTable">
+<tr>
+<td class="button" onclick="comparePairs('<')"><div id="left"></div></td>
+<td><div class="rb bb" onclick="comparePairs('=')">No Preference</div></td>
+<td class="button" onclick="comparePairs('>')"><div id="right"></div></td>
+</tr>
+</table>
+<table class="center" id="resultTable" style="display:none">
+
+</table>
+
+</center>
+
+
+<center>
+<div id="rez">
+
+</center>
+
+
+
+<script>
+
+var memberList = new Array(
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_01-01tsubaki-01.png'><br /><div class='rb'>Tsubaki</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_01-02sazanka-02.png'><br /><div class='rb'>Sazanka</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_01-03asagao-02.png'><br /><div class='rb'>Asagao</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_01-04rindo-02.png'><br /><div class='rb'>Rindou</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_02-01tachiaoi-02.png'><br /><div class='rb'>Tachiaoi</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_02-02higuruma-02.png'><br /><div class='rb'>Higuruma</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_02-03hagi-02.png'><br /><div class='rb'>Hagi</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_03-01shion-02.png'><br /><div class='rb'>Shion</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_03-02suzuran-02.png'><br /><div class='rb'>Suzuran</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_03-03ajisai-02.png'><br /><div class='rb'>Ajisai</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_04-01fuki-02.png'><br /><div class='rb'>Fuki</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_04-02itadori-02.png'><br /><div class='rb'>Itadori</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_04-03ume-02.png'><br /><div class='rb'>Ume</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_05-01kagetsu-02.png'><br /><div class='rb'>Kagetsu</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_05-02mukuge-02.png'><br /><div class='rb'>Mukuge</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_05-03hototogisu-02.png'><br /><div class='rb'>Hototogisu</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_06-01higiri-02.png'><br /><div class='rb'>Higiri</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_06-02suzushiro-02.png'><br /><div class='rb'>Suzushiro</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_06-03hasu-02.png'><br /><div class='rb'>Hasu</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_07-01uikyo-02.png'><br /><div class='rb'>Uikyo</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_07-02kikyo-02.png'><br /><div class='rb'>Kikyo</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_08-01hinagiku-02.png'><br /><div class='rb'>Hinagiku</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_08-02kibushi-02.png'><br /><div class='rb'>Kibushi</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_08-03oniyuri-02.png'><br /><div class='rb'>Oniyuri</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_09-01benisumomo-02.png'><br /><div class='rb'>Benisumomo</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_09-02mizubasyo-02.png'><br /><div class='rb'>Mizubasyo</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_09-03touwata-02.png'><br /><div class='rb'>Touwata</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_10-01mokuren-02.png'><br /><div class='rb'>Mokuren</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_10-02housenka-02.png'><br /><div class='rb'>Housenka</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_10-03tsuwabuki-02.png'><br /><div class='rb'>Tsuwabuki</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_11-01sumire-02.png'><br /><div class='rb'>Sumire</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_11-02azami-02.png'><br /><div class='rb'>Azami</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_11-03tanpopo-02.png'><br /><div class='rb'>Tanpopo</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_12-01dokudami-02.png'><br /><div class='rb'>Dokudami</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_12-02aogiri-02.png'><br /><div class='rb'>Aogiri</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_12-03syakuyaku-02.png'><br /><div class='rb'>Syakuyaku</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_13-01hana-02.png'><br /><div class='rb'>Hana</div>",
+"<img width=100px src='https://kunoichi-tsubaki.com/assets/img/character/face_13-02konoha-02.png'><br /><div class='rb'>Konoha</div>",
+
+);
+
+var sortedList = new Array();
+var rankings = new Array();
+var imax, imin, i, checking, rank;
+var stepsDone = 0;
+var complexity;
+
+window.onload = initPage;
+function initPage(){
+	complexity = Math.ceil(memberList.length * Math.log2(memberList.length));
+	sortedList.splice(0, 0, memberList.pop());
+    rankings.splice(0, 0, 1);
+	document.getElementById('left').innerHTML = sortedList[0]; 
+  	checking = memberList.pop();
+  	document.getElementById('right').innerHTML = checking;
+    imin = 0;
+    imax = 0;
+    i = 0
+}
+
+function setNewPairs(){
+	if (memberList.length > 0){
+    	checking = memberList.pop();
+		document.getElementById('right').innerHTML = checking;
+    	imin = 0;
+    	imax = sortedList.length - 1; 
+        i = Math.floor((imin+imax)/2);
+		document.getElementById('left').innerHTML = sortedList[i]; 
+    }else{
+    	displayRankings();
+        console.log(sortedList);
+        console.log(rankings);
+    }
+	
+}
+
+
+
+function comparePairs(value){
+	calculateDone();
+	//i = Math.floor((imin+imax)/2); 
+    observedMember = document.getElementById('right').innerHTML;
+    if (imax - imin == 0){
+    	if (value == '<'){
+        	sortedList.splice(i+1, 0, observedMember);
+            rankings.splice(i+1, 0, 1);
+    		setNewPairs();
+        }else if (value == '>'){
+        	sortedList.splice(i, 0, observedMember);
+            rankings.splice(i, 0, 1);
+    		setNewPairs();
+        }else{
+        	sortedList.splice(i+1, 0, observedMember);
+            rankings.splice(i+1, 0, 0);
+    		setNewPairs();
+        }
+    }else if (imax - imin == 1){
+    	if (value == '<'){
+        	imin = imax;
+            i = Math.floor((imin+imax)/2);
+			document.getElementById('left').innerHTML = sortedList[i]; 
+            //comparePairs(value);
+            return;
+        }else if (value == '>'){
+        	sortedList.splice(i, 0, observedMember);
+            rankings.splice(i, 0, 1);
+    		setNewPairs();
+        }else{
+        	sortedList.splice(i+1, 0, observedMember);
+            rankings.splice(i+1, 0, 0);
+    		setNewPairs();
+        }
+    }else{
+    	if (value == '<'){
+        	imin = i + 1;
+            i = Math.floor((imin+imax)/2);
+			document.getElementById('left').innerHTML = sortedList[i]; 
+            //comparePairs(value);
+            return;
+        }else if (value == '>'){
+        	imax = i - 1;
+            i = Math.floor((imin+imax)/2);
+			document.getElementById('left').innerHTML = sortedList[i]; 
+            //comparePairs(value);
+            return;
+        }else{
+        	sortedList.splice(i+1, 0, observedMember);
+            rankings.splice(i+1, 0, 0);
+    		setNewPairs();
+        }
+    }
+}
+
+function displayRankings(){
+	var mtable = document.getElementById("mainTable");
+    mtable.style.display = "none";
+    document.getElementById("head").style.display = "none";
+	document.getElementById("head2").style.display = "block";
+	for(i = 0; i < rankings.length; i++){
+    	if (rankings[i] == 1){
+        	rankings[i] = i+1;
+        }else{
+        	rankings[i] = rankings[i-1];
+        }
+    }
+    
+    var results = document.getElementById("rez");
+    var outText = "";
+    for (i = 0; i < sortedList.length; i+= 1){
+        outText += "<div class='item'><span class='rank'>#" + rankings[i].toString() + "</span><br />" + sortedList[i] + "</div>"
+    }
+    results.innerHTML = outText;
+    
+
+}
+
+function calculateDone(){
+	stepsDone++;
+    eta = Math.floor(100 * stepsDone / complexity * 1.4);
+    if (eta < 100){
+    	document.getElementById("done").innerHTML = "You are " + eta.toString() + "% done.";
+    }else{
+    	document.getElementById("done").innerHTML = "Look, I can't actually calculate this. You're probably almost done.";
+    }
+    
+}
+
+
+</script>
+
+
+
+
+</body>
 </html>
+
+
