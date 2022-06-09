@@ -62,30 +62,29 @@ div#head2{
 </style>
 </head>
 <body>
-<center>
-<div id="head">Kunoichi sorter. Select you are favorite <br /> Kunoichi and receive a sorted list.<br /><br /><span id="done">You are 0% done.</span></div>
-<div id="head2" style="display:none">Sorting results:</div>
-
-<table class="center" id="mainTable">
-<tr>
-<td class="button" onclick="comparePairs('<')"><div id="left"></div></td>
-<td><div class="rb bb" onclick="comparePairs('=')">No Preference</div></td>
-<td class="button" onclick="comparePairs('>')"><div id="right"></div></td>
-</tr>
-</table>
-<table class="center" id="resultTable" style="display:none">
-
-</table>
-
-</center>
-
 
 <center>
-<div id="rez">
+
+	<div id="head">Kunoichi sorter. Select you are favorite <br /> Kunoichi and receive a sorted list.<br /><br /><span id="done">You are 0% done.</span></div>
+	<div id="head2" style="display:none">Sorting results:</div>
+
+	<table class="center" id="mainTable">
+		<tr>
+			<td class="button" onclick="comparePairs('<')">
+				<div id="left"></div>
+			</td>
+			<td>
+				<div class="rb bb" onclick="comparePairs('=')">No Preference</div>
+			</td>
+			<td class="button" onclick="comparePairs('>')">
+				<div id="right"></div>
+			</td>
+		</tr>
+	</table>
+
+	<div id="rez"></div>
 
 </center>
-
-
 
 <script>
 
@@ -134,8 +133,9 @@ var memberList = new Array(
 var sortedList = new Array();
 var rankings = new Array();
 var imax, imin, i, checking, rank;
-var stepsDone = 0;
-var complexity;
+var stepsDoneForCurrentMember = 0;
+var currentSortedLength = 0;
+var totalClicksEta = Math.floor(memberList.length * Math.log2(memberList.length));
 
 window.onload = initPage;
 function initPage(){
@@ -160,17 +160,12 @@ function setNewPairs(){
 		document.getElementById('left').innerHTML = sortedList[i]; 
     }else{
     	displayRankings();
-        console.log(sortedList);
-        console.log(rankings);
     }
 	
 }
 
-
-
 function comparePairs(value){
 	calculateDone();
-	//i = Math.floor((imin+imax)/2); 
     observedMember = document.getElementById('right').innerHTML;
     if (imax - imin == 0){
     	if (value == '<'){
@@ -191,7 +186,6 @@ function comparePairs(value){
         	imin = imax;
             i = Math.floor((imin+imax)/2);
 			document.getElementById('left').innerHTML = sortedList[i]; 
-            //comparePairs(value);
             return;
         }else if (value == '>'){
         	sortedList.splice(i, 0, observedMember);
@@ -207,13 +201,11 @@ function comparePairs(value){
         	imin = i + 1;
             i = Math.floor((imin+imax)/2);
 			document.getElementById('left').innerHTML = sortedList[i]; 
-            //comparePairs(value);
             return;
         }else if (value == '>'){
         	imax = i - 1;
             i = Math.floor((imin+imax)/2);
 			document.getElementById('left').innerHTML = sortedList[i]; 
-            //comparePairs(value);
             return;
         }else{
         	sortedList.splice(i+1, 0, observedMember);
@@ -235,7 +227,6 @@ function displayRankings(){
         	rankings[i] = rankings[i-1];
         }
     }
-    
     var results = document.getElementById("rez");
     var outText = "";
     for (i = 0; i < sortedList.length; i+= 1){
@@ -247,23 +238,16 @@ function displayRankings(){
 }
 
 function calculateDone(){
-	stepsDone++;
-    eta = Math.floor(100 * stepsDone / complexity * 1.4);
-    if (eta < 100){
-    	document.getElementById("done").innerHTML = "You are " + eta.toString() + "% done.";
-    }else{
-    	document.getElementById("done").innerHTML = "Look, I can't actually calculate this. You're probably almost done.";
-    }
-    
+	if (currentSortedLength != sortedList.length){
+		stepsDoneForCurrentMember = 0;
+		currentSortedLength = sortedList.length;
+	}
+	stepsDoneForCurrentMember++;
+    eta = Math.min(Math.round(100*(stepsDoneForCurrentMember + currentSortedLength * Math.log2(currentSortedLength)) / totalClicksEta),99);
+    document.getElementById("done").innerHTML = "You are " + eta.toString() + "% done.";
 }
 
 
 </script>
-
-
-
-
 </body>
 </html>
-
-
